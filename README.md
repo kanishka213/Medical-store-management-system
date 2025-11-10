@@ -1,1 +1,1 @@
-website link - https://e-commerce-websitte1.netlify.app/
+website link - https://medical-store-management-system.netlify.app/
