@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Medical Store Management</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="style.css" />
+  <script defer src="app.js"></script>
+</head>
+<body>
+  <header class="app-header">
+    <h1>🩺 Medical Store Management</h1>
+    <nav class="tabs">
+      <button data-tab="inventory" class="tab active">Inventory</button>
+      <button data-tab="sales" class="tab">Sales</button>
+      <button data-tab="history" class="tab">History & Revenue</button>
+      <button data-tab="export" class="tab">Export</button>
+    </nav>
+  </header>
+
+  <main class="container">
+    <!-- Inventory -->
+    <section id="inventory" class="tab-panel active">
+      <div class="panel-grid">
+        <form id="medicineForm" class="card">
+          <h2 id="formTitle">Add Medicine</h2>
+          <input type="hidden" id="medId" />
+
+          <div class="grid-2">
+            <label>Name
+              <input id="name" required placeholder="Paracetamol 500mg" />
+            </label>
+            <label>Category
+              <input id="category" placeholder="Tablet / Syrup / Injection" />
+            </label>
+          </div>
+
+          <div class="grid-3">
+            <label>Batch #
+              <input id="batch" placeholder="BATCH-001" />
+            </label>
+            <label>Expiry
+              <input id="expiry" type="date" />
+            </label>
+            <label>Supplier
+              <input id="supplier" placeholder="ACME Pharma" />
+            </label>
+          </div>
+
+          <div class="grid-3">
+            <label>Price (₹)
+              <input id="price" type="number" min="0" step="0.01" required />
+            </label>
+            <label>Stock (qty)
+              <input id="stock" type="number" min="0" step="1" required />
+            </label>
+            <label>MRP (₹)
+              <input id="mrp" type="number" min="0" step="0.01" placeholder="Optional" />
+            </label>
+          </div>
+
+          <div class="row">
+            <button class="btn primary" type="submit">Save</button>
+            <button class="btn" type="reset" id="resetFormBtn">Reset</button>
+          </div>
+        </form>
+
+        <div class="card">
+          <h2>Find Medicines</h2>
+          <div class="grid-3">
+            <input id="search" placeholder="Search by name, batch or supplier..." />
+            <input id="catFilter" placeholder="Filter by category..." />
+            <select id="stockFilter">
+              <option value="">Stock: All</option>
+              <option value="in">In stock</option>
+              <option value="low">Low (&lt;= 5)</option>
+              <option value="out">Out of stock</option>
+              <option value="expired">Expired</option>
+            </select>
+          </div>
+          <div class="table-wrap">
+            <table class="table" id="medTable">
+              <thead>
+                <tr>
+                  <th>Name</th><th>Cat</th><th>Batch</th><th>Expiry</th>
+                  <th>Price</th><th>Stock</th><th>Supplier</th><th>Actions</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+          <div class="muted small" id="medCount"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sales -->
+    <section id="sales" class="tab-panel">
+      <div class="panel-grid">
+        <div class="card">
+          <h2>New Bill</h2>
+          <div class="grid-3">
+            <select id="saleMedSelect"></select>
+            <input id="saleQty" type="number" min="1" step="1" value="1" />
+            <button class="btn" id="addToBill">Add to Bill</button>
+          </div>
+          <div class="row muted small" id="saleMedInfo"></div>
+
+          <div class="table-wrap">
+            <table class="table" id="billTable">
+              <thead>
+                <tr>
+                  <th>Item</th><th>Price</th><th>Qty</th><th>Total</th><th></th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+              <tfoot>
+                <tr>
+                  <td colspan="3" class="right"><strong>Bill Total</strong></td>
+                  <td id="billTotal"><strong>₹0</strong></td>
+                  <td></td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+
+          <div class="row">
+            <button class="btn primary" id="processSale">Process Sale</button>
+            <button class="btn" id="clearBill">Clear Bill</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>Quick Info</h2>
+          <div id="quickInfo"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- History -->
+    <section id="history" class="tab-panel">
+      <div class="card">
+        <h2>Sales History</h2>
+        <div class="grid-3">
+          <label>From
+            <input type="date" id="fromDate" />
+          </label>
+          <label>To
+            <input type="date" id="toDate" />
+          </label>
+          <input id="historySearch" placeholder="Search item name..." />
+        </div>
+        <div class="table-wrap">
+          <table class="table" id="salesTable">
+            <thead>
+              <tr>
+                <th>Date/Time</th><th>Items</th><th>Qty</th><th>Total</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+            <tfoot>
+              <tr>
+                <td colspan="3" class="right"><strong>Revenue</strong></td>
+                <td id="revenueCell"><strong>₹0</strong></td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Export -->
+    <section id="export" class="tab-panel">
+      <div class="card">
+        <h2>Export Data</h2>
+        <div class="grid-2">
+          <div>
+            <h3>Medicines</h3>
+            <div class="row">
+              <button class="btn" id="exportMedCSV">Export CSV</button>
+              <button class="btn" id="exportMedJSON">Export JSON</button>
+            </div>
+          </div>
+          <div>
+            <h3>Sales</h3>
+            <div class="row">
+              <button class="btn" id="exportSalesCSV">Export CSV</button>
+              <button class="btn" id="exportSalesJSON">Export JSON</button>
+            </div>
+          </div>
+        </div>
+        <p class="muted small">Tip: The exported files are generated directly in your browser — no server required.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="app-footer">
+    <div>© <span id="year"></span> Medical Store (Local-first demo)</div>
+  </footer>
+</body>
+</html>
